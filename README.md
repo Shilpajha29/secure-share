@@ -50,7 +50,7 @@ This is a beginner-friendly full-stack FastAPI project that demonstrates how to 
 - Uses `/login` with form-data: `username`, `password`  
 - Receives JWT token  
 
-📷 ![Login](assets/login.png)
+📷 ![Login](assets/Login.png)
 
 ---
 
