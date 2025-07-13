@@ -28,90 +28,100 @@ This is a beginner-friendly full-stack FastAPI project that demonstrates how to 
 
 ---
 
-## 📁 Folder Structure
-secure-share/
-├── app/
-│ ├── main.py # App entry
-│ ├── auth.py # Login, JWT logic
-│ ├── models.py # Data models
-│ ├── schemas.py # Pydantic schemas
-│ ├── database.py # In-memory user store
-│ ├── utils/
-│ │ ├── encryption.py # Fernet encrypt/decrypt
-│ │ └── email_utils.py # Mock email sender
-│ └── routes/
-│ ├── ops.py # Upload route (only Ops)
-│ └── client.py # Signup, download, etc.
-├── uploads/ # Uploaded files
-├── assets/ # Screenshot assets
-├── .env # JWT_SECRET key
-├── requirements.txt
-├── README.md
+## 🧭 How This Website Works – The Full Flow
+
+### 🔵 Step 1: Client Signs Up  
+- Calls `POST /signup/client`  
+- Gets an encrypted mock email verification link in the terminal  
+
+📷 ![Client Signup](assets/signup.png)
 
 ---
 
-## 🛠️ Getting Started
+### 🟢 Step 2: Email Verification  
+- Visits `/verify-email/{token}`  
+- Email is decrypted and marked as verified  
 
-### 1. Clone & Setup
-```bash
-git clone https://github.com/YOUR_USERNAME/secure-share.git
-cd secure-share
-python -m venv venv
-venv\Scripts\activate  # Or: source venv/bin/activate (Linux/Mac)
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+📷 ![Email Verified](assets/verify_email.png)
 
-🧪 Testing Flow (Step-by-Step with Screenshots)
+---
 
-📝 Step 1: Sign Up (Client)
-Endpoint: POST /signup/client
+### 🟠 Step 3: Client Logs In  
+- Uses `/login` with form-data: `username`, `password`  
+- Receives JWT token  
 
-Creates a new client and sends a mock email link in console.
+📷 ![Login](assets/login.png)
 
+---
 
-✅ Step 2: Email Verification
-Copy the link shown in terminal and paste it in browser.
+### 🔴 Step 4: Ops Logs In  
+- Ops user logs in (`ops1@example.com`) via `/login`  
+- Gets a token used for file upload access
 
+---
 
-🔐 Step 3: Login
-Use /login with form data (username, password)
+### 🟣 Step 5: Ops Uploads File  
+- Sends `POST /upload` with `.docx`, `.pptx`, `.xlsx`  
+- Saved in `/uploads/`
 
+📷 ![Upload File](assets/upload_file.png)
 
-📤 Step 4: Upload File (Only for Ops)
-Endpoint: POST /upload
+---
 
-Only .docx, .xlsx, .pptx are allowed
+### 🟤 Step 6: Client Lists Files  
+- Sends `GET /files`  
+- Returns list of uploaded files  
 
-Only JWT-authenticated Ops can access
+📷 ![List Files](assets/list_files.png)
 
+---
 
-📁 Step 5: List All Files (Client Only)
-Endpoint: GET /files
+### ⚪ Step 7: Client Generates Download Link  
+- Sends `GET /download-file/{filename}`  
+- Gets encrypted download link  
 
-Client can view list of all uploaded files.
+📷 ![Download Link](assets/generate_download_link.png)
 
+---
 
-🔗 Step 6: Generate Secure Download Link
-Client can generate a Fernet-encrypted download URL.
+### 🟡 Step 8: Client Downloads File  
+- Sends `GET /secure-download/{token}`  
+- Only works for verified client users  
 
+📷 ![Secure Download](assets/secure_download.png)
 
-💾 Step 7: Secure Download (Only Client Allowed)
-Access the /secure-download/{token} URL
+---
 
-File will download
+### 🎯 Role Access Summary
 
-If Ops or invalid token: access is denied
+| Action               | Client ✅ | Ops ✅ |
+|----------------------|-----------|--------|
+| Sign Up              | ✅         | ❌     |
+| Email Verify         | ✅         | ❌     |
+| Login                | ✅         | ✅     |
+| Upload File          | ❌         | ✅     |
+| List Files           | ✅         | ❌     |
+| Get Download Link    | ✅         | ❌     |
+| Use Download Link    | ✅         | ❌     |
 
+---
+
+## 🧪 Testing With Postman
+
+Import this file into Postman:
+
+📦 [`secure-file.postman_collection.json`](./secure-file.postman_collection.json)
+
+Each endpoint has:
+- Method
+- Headers (use Bearer token for `/files` and `/upload`)
+- Sample payload
+
+---
 
 🔐 Sample Users
-Role	Email	Password
-Ops	client1@example.com	abc123
-Client	client2@example.com	abcabc
 
-Use /login to get access token for either role.
+Ops	-> client1@example.com	-> abc123
 
-📦 Postman Collection
-✅ All endpoints are configured in:
-secure-file-sharing.postman_collection.json
+Client	-> client2@example.com	-> abcabc
 
-Just import into Postman and test one-by-one 🔁
