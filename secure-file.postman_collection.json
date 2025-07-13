@@ -1,0 +1,186 @@
+
+
+{
+  "info": {
+    "_postman_id": "secure-file-sharing-id",
+    "name": "Secure File Sharing API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Signup (Client)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"client1@example.com\",\n  \"password\": \"abc123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/signup/client",
+          "host": ["{{base_url}}"],
+          "path": ["signup", "client"]
+        }
+      }
+    },
+    {
+      "name": "Verify Email (Client)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/verify-email/{{token}}",
+          "host": ["{{base_url}}"],
+          "path": ["verify-email", "{{token}}"]
+        }
+      }
+    },
+    {
+      "name": "Login (Client or Ops)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "client1@example.com"
+            },
+            {
+              "key": "password",
+              "value": "abc123"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/login",
+          "host": ["{{base_url}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Make Ops User (Optional)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/make-ops/ops1@example.com",
+          "host": ["{{base_url}}"],
+          "path": ["make-ops", "ops1@example.com"]
+        }
+      }
+    },
+    {
+      "name": "Upload File (Ops Only)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "anchoring.docx"  
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/upload",
+          "host": ["{{base_url}}"],
+          "path": ["upload"]
+        }
+      }
+    },
+    {
+      "name": "List Files (Client Only)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/files",
+          "host": ["{{base_url}}"],
+          "path": ["files"]
+        }
+      }
+    },
+    {
+      "name": "Generate Secure Download Link",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/download-file/{{filename}}",
+          "host": ["{{base_url}}"],
+          "path": ["download-file", "{{filename}}"]
+        }
+      }
+    },
+    {
+      "name": "Secure Download (Client Only)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/secure-download/{{token}}",
+          "host": ["{{base_url}}"],
+          "path": ["secure-download", "{{token}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "filename",
+      "value": "sample.docx"
+    }
+  ]
+}
