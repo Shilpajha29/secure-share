@@ -1,65 +1,117 @@
-# Secure File Sharing System (FastAPI)
+# 🔐 Secure File Sharing System — FastAPI Based
 
-A RESTful API for secure file sharing between two types of users:
-- **Ops User**: Can upload `.docx`, `.xlsx`, `.pptx` files
-- **Client User**: Can sign up, verify email, login, and securely download files
+This is a beginner-friendly full-stack FastAPI project that demonstrates how to securely share files between two different user types — **Ops Users** and **Client Users** — with email verification, JWT authentication, encrypted download URLs, and role-based access control.
 
-## 🚀 Features
+---
 
-- ✅ JWT-based Auth for Clients & Ops
-- ✅ Email verification with encrypted tokens
-- ✅ Upload (restricted to specific types)
-- ✅ Secure download links (tokenized & client-only)
-- ✅ Swagger UI support
+##  Features
+
+- ✅ Client User Sign-up with mock email verification
+- ✅ JWT-based login for both Ops & Client users
+- ✅ Role-based access:
+  - **Only Ops** can upload files (.docx, .pptx, .xlsx)
+  - **Only Clients** can list/download files via secure links
+- ✅ Encrypted download URLs (Fernet) that restrict access by role
+- ✅ Postman collection for testing
+- ✅ Beginner-friendly codebase with clean folder structure
+
+---
+
+## 🧠 Tech Stack
+
+- **Framework**: FastAPI
+- **Auth**: OAuth2 + JWT tokens
+- **Encryption**: `cryptography.fernet`
+- **Data**: In-memory DB (for demo)
+- **Test Tool**: Postman
+- **Lang**: Python 3.10+
+
+---
 
 ## 📁 Folder Structure
-
 secure-share/
 ├── app/
-│ ├── main.py
-│ ├── auth.py
-│ ├── models.py
-│ ├── schemas.py
-│ ├── database.py
+│ ├── main.py # App entry
+│ ├── auth.py # Login, JWT logic
+│ ├── models.py # Data models
+│ ├── schemas.py # Pydantic schemas
+│ ├── database.py # In-memory user store
 │ ├── utils/
-│ │ ├── encryption.py
-│ │ └── email_utils.py
+│ │ ├── encryption.py # Fernet encrypt/decrypt
+│ │ └── email_utils.py # Mock email sender
 │ └── routes/
-│ ├── ops.py
-│ └── client.py
-├── uploads/
+│ ├── ops.py # Upload route (only Ops)
+│ └── client.py # Signup, download, etc.
+├── uploads/ # Uploaded files
+├── assets/ # Screenshot assets
+├── .env # JWT_SECRET key
 ├── requirements.txt
-└── README.md
+├── README.md
 
-markdown
-Copy code
+---
 
-## 🧪 API Testing Flow
+## 🛠️ Getting Started
 
-1. `POST /signup/client` → Sign up client
-2. `GET /verify-email/{token}` → Verify email
-3. `POST /login` → Login & get JWT
-4. Paste token in Swagger "Authorize" box
-5. `POST /make-ops/{email}` (only if making Ops)
-6. `POST /upload` → Upload file (only for Ops)
-7. `GET /files` → List uploaded files (only for Clients)
-8. `GET /download-file/{filename}` → Get secure link
-9. `GET /secure-download/{token}` → Download securely
-
-## 💡 Run the App
-
+### 1. Clone & Setup
 ```bash
+git clone https://github.com/YOUR_USERNAME/secure-share.git
+cd secure-share
+python -m venv venv
+venv\Scripts\activate  # Or: source venv/bin/activate (Linux/Mac)
+pip install -r requirements.txt
 uvicorn app.main:app --reload
-🧪 Run Tests
-bash
-Copy code
-pytest test_main.py
-📦 Dependencies
-css
-Copy code
-fastapi
-uvicorn
-python-multipart
-passlib[bcrypt]
-python-jose
-cryptography
+
+🧪 Testing Flow (Step-by-Step with Screenshots)
+
+📝 Step 1: Sign Up (Client)
+Endpoint: POST /signup/client
+
+Creates a new client and sends a mock email link in console.
+
+
+✅ Step 2: Email Verification
+Copy the link shown in terminal and paste it in browser.
+
+
+🔐 Step 3: Login
+Use /login with form data (username, password)
+
+
+📤 Step 4: Upload File (Only for Ops)
+Endpoint: POST /upload
+
+Only .docx, .xlsx, .pptx are allowed
+
+Only JWT-authenticated Ops can access
+
+
+📁 Step 5: List All Files (Client Only)
+Endpoint: GET /files
+
+Client can view list of all uploaded files.
+
+
+🔗 Step 6: Generate Secure Download Link
+Client can generate a Fernet-encrypted download URL.
+
+
+💾 Step 7: Secure Download (Only Client Allowed)
+Access the /secure-download/{token} URL
+
+File will download
+
+If Ops or invalid token: access is denied
+
+
+🔐 Sample Users
+Role	Email	Password
+Ops	client1@example.com	abc123
+Client	client2@example.com	abcabc
+
+Use /login to get access token for either role.
+
+📦 Postman Collection
+✅ All endpoints are configured in:
+secure-file-sharing.postman_collection.json
+
+Just import into Postman and test one-by-one 🔁
